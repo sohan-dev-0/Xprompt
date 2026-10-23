@@ -30,7 +30,7 @@ PromptLock is a floating desktop overlay designed to sit alongside your IDE (Cur
 
 ### 1. Clone & Install
 
-    git clone https://github.com/promptlock/promptlock.git
+    git clone https://github.com/sohan-dev-0/PromptLock.git
     cd PromptLock
     npm install
 
