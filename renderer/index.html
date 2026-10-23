@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'"/>
+  <title>PromptLock</title>
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="styles/glass.css"/>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║   FLOATING ICON (collapsed state)        ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<div id="floatIcon" class="float-icon">
+  <div class="fi-ring"></div>
+  <div class="fi-body">
+    <img src="assets/icon.png" alt="PromptLock" class="float-widget-icon">
+  </div>
+  <div class="fi-pulse"></div>
+</div>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║   EXPANDED DASHBOARD PANEL               ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<div id="panel" class="panel hidden">
+
+  <!-- ── HEADER ─────────────────────────────── -->
+  <header id="panelHeader" class="p-header">
+
+    <div class="ph-left">
+      <img src="assets/icon.png" alt="PromptLock Logo" class="app-logo-img">
+      <span class="logo-text">PromptLock</span>
+      <span class="logo-ver">v2.0</span>
+    </div>
+
+    <!-- Active workspace badge -->
+    <div id="workspaceBadge" class="ws-badge hidden">
+      <span class="ws-dot"></span>
+      <span id="wsName" class="ws-name">no project</span>
+    </div>
+
+    <div class="ph-right">
+      <button id="btnRecentToggle" class="wc wc-recent" title="Recent Projects">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M2 4a1 1 0 011-1h3.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293H13a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button id="btnSettings" class="wc wc-settings" title="AI Provider Settings">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+          <path d="M8 10a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M13.2 9.5a1 1 0 00.2 1.1l.1.1a1.2 1.2 0 010 1.7l-.8.8a1.2 1.2 0 01-1.7 0l-.1-.1a1 1 0 00-1.1-.2 1 1 0 00-.6.9v.3a1.2 1.2 0 01-1.2 1.2h-1.2a1.2 1.2 0 01-1.2-1.2v-.3a1 1 0 00-.6-.9 1 1 0 00-1.1.2l-.1.1a1.2 1.2 0 01-1.7 0l-.8-.8a1.2 1.2 0 010-1.7l.1-.1a1 1 0 00.2-1.1 1 1 0 00-.9-.6H2.5A1.2 1.2 0 011.3 8.7V7.5a1.2 1.2 0 011.2-1.2h.3a1 1 0 00.9-.6 1 1 0 00-.2-1.1l-.1-.1a1.2 1.2 0 010-1.7l.8-.8a1.2 1.2 0 011.7 0l.1.1a1 1 0 001.1.2 1 1 0 00.6-.9V3a1.2 1.2 0 011.2-1.2h1.2A1.2 1.2 0 019.5 3v.3a1 1 0 00.6.9 1 1 0 001.1-.2l.1-.1a1.2 1.2 0 011.7 0l.8.8a1.2 1.2 0 010 1.7l-.1.1a1 1 0 00-.2 1.1 1 1 0 00.9.6h.3a1.2 1.2 0 011.2 1.2v1.2a1.2 1.2 0 01-1.2 1.2h-.3a1 1 0 00-.9.6z" stroke="currentColor" stroke-width="1.3"/>
+        </svg>
+      </button>
+      <button id="btnMin" class="wc wc-min" title="Minimize to icon">
+        <svg width="8" height="2" viewBox="0 0 8 2"><path d="M1 1h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <button id="btnClose" class="wc wc-close" title="Close">
+        <svg width="7" height="7" viewBox="0 0 7 7"><path d="M1 1l5 5M6 1L1 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── RECENT PROJECTS DROPDOWN ── -->
+  <div id="recent-projects-dropdown" class="recent-projects-dropdown hidden">
+    <div class="recent-header">
+      <span>📁 Recent Projects</span>
+      <button id="btn-open-folder" class="btn-open-folder" title="Open Folder">📁</button>
+    </div>
+    <ul id="recent-list" class="recent-list"></ul>
+  </div>
+
+  <!-- ── SUB-BAR: TARGET AI AGENT SELECTOR & PROJECT ── -->
+  <div class="agent-control-bar">
+    <div class="agent-selector-group">
+      <label class="agent-label" for="targetAgentSelect">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M8 4.5v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Target AI:
+      </label>
+      <div class="select-wrapper">
+        <select id="targetAgentSelect" class="agent-dropdown">
+          <option value="cursor" selected>🤖 Cursor AI (Composer / Agent)</option>
+          <option value="claude">⚡ Claude 3.5 Sonnet (Anthropic)</option>
+          <option value="chatgpt">🧠 ChatGPT-4o (Canvas / OpenAI)</option>
+          <option value="copilot">🚀 GitHub Copilot (Workspace)</option>
+          <option value="windsurf">🔮 Windsurf (Cascade)</option>
+          <option value="antigravity">🛡️ Anti-Gravity AI</option>
+          <option value="v0">⚡ v0.dev (Frontend UI)</option>
+          <option value="deepseek">🧪 DeepSeek Coder</option>
+        </select>
+        <span class="dropdown-chevron">
+          <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2.5 3.5L5 6l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <div class="project-picker-group">
+      <span id="dirPath" class="dir-text-mini muted" title="No project selected">No project selected</span>
+      <button id="btnPickDir" class="btn-browse-mini" title="Open Project Folder">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+          <path d="M2 4a1 1 0 011-1h3.5l2 2H13a1 1 0 011 1v6a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.3"/>
+        </svg>
+        Open
+      </button>
+    </div>
+  </div>
+
+  <!-- ── 6-TAB BAR ──────────────────────────── -->
+  <nav class="tab-bar">
+    <button class="tab" data-tab="scanner" title="Scanner — File Tree & AST Health">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <path d="M2 3a1 1 0 011-1h4l2 2h4a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M5 8h6M5 11h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      Scanner
+    </button>
+    <button class="tab active" data-tab="chat" title="Chat — Orchestrator Dialogue & Options">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <path d="M14 10.5a3.5 3.5 0 01-3.5 3.5H4l-2.5 2V4A3.5 3.5 0 015 0.5h5.5A3.5 3.5 0 0114 4v6.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+      </svg>
+      Chat
+    </button>
+    <button class="tab" data-tab="prompt" title="Prompt — Guardrail Generator & Co-Pilot">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1.5C4.4 1.5 1.5 4.1 1.5 7.3c0 1.8.9 3.4 2.4 4.4-.1.8-.5 2-1.3 2.8 1.2 0 2.6-.5 3.5-1.2.6.2 1.2.3 1.9.3 3.6 0 6.5-2.6 6.5-5.8S11.6 1.5 8 1.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+      </svg>
+      Prompt
+    </button>
+    <button class="tab" data-tab="verify" title="Verify — Post-Execution Verification">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <path d="M13.5 4.5l-7 7L3 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Verify
+      <span class="beta-badge">BETA</span>
+    </button>
+    <button class="tab" data-tab="workflow" title="Workflow — 6-Phase Development Lifecycle">
+      🔄 Workflow
+    </button>
+  </nav>
+
+  <!-- ── TAB 1: SCANNER (File Tree & 8 Health Bars) ─────── -->
+  <div id="tabScanner" class="tab-content hidden">
+    <div class="ft-header">
+      <div class="ft-project-info" id="ftProjectInfo">
+        <div class="ft-no-project" id="ftNoProject">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" opacity="0.35">
+            <path d="M4 8a2 2 0 012-2h7l3 3h10a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <p>Open a project directory to view its file tree and dependency health.</p>
+          <button id="btnPickDir2" class="btn-pick">Open Project</button>
+        </div>
+        <div class="ft-tree-wrap hidden" id="ftTreeWrap">
+          <div class="dep-health" id="depHealth">
+            <div class="dh-label">Dependency & Code Health (8 Metrics)</div>
+            <div class="dh-bars" id="dhBars"></div>
+          </div>
+          <div class="tree-list" id="treeList"></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tabScanner -->
+
+  <!-- Alias for backwards compatibility: tabFiletree -->
+  <div id="tabFiletree" class="tab-content hidden" style="display:none;"></div>
+
+  <!-- ── TAB 3: CHAT (Step 1.2 Orchestrator Dialogue) ── -->
+  <div id="tabChat" class="tab-content active">
+    <div class="chat-tab-container">
+      <div class="chat-tab-intro">
+        <span class="cti-badge">ORCHESTRATOR CHAT</span>
+        <p>Talk directly with PromptLock. Describe any feature and select from verified AST-grounded architecture options.</p>
+      </div>
+
+      <div class="chat-feed-area">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div id="chat-options" class="chat-options-panel hidden"></div>
+        <div id="chat-approval" class="chat-approval-panel hidden"></div>
+        <div id="chat-typing" class="chat-typing-bar hidden">
+          <div class="copilot-thinking-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="ct-label">PromptLock Brain is analyzing AST…</span>
+        </div>
+      </div>
+
+      <div class="chat-dock-box">
+        <div class="chat-mode-selector" id="chat-mode-selector" role="radiogroup" aria-label="Chat Mode Selector">
+          <button type="button" class="chat-mode-btn active" data-mode="chat" id="mode-btn-chat" title="Normal Chat (Conversational, AST Questions)">
+            <span class="mode-icon">💬</span> Normal Chat
+          </button>
+          <button type="button" class="chat-mode-btn" data-mode="add" id="mode-btn-add" title="Add Feature (A/B/C Options & Plan)">
+            <span class="mode-icon">➕</span> Add Feature
+          </button>
+          <button type="button" class="chat-mode-btn" data-mode="update" id="mode-btn-update" title="Update Feature (Refactor Existing Feature)">
+            <span class="mode-icon">🔄</span> Update Feature
+          </button>
+          <button type="button" class="chat-mode-btn" data-mode="fix" id="mode-btn-fix" title="Fix Bug (Targeted Bug Fix Prompt)">
+            <span class="mode-icon">🐞</span> Fix Bug
+          </button>
+        </div>
+        <div class="chat-input-row">
+          <textarea
+            id="chat-input"
+            class="chat-text-input"
+            rows="1"
+            placeholder="Type your message (e.g. 'Implement JWT auth', 'Stripe webhook endpoint')..."
+            autocomplete="off"
+            spellcheck="false"
+          ></textarea>
+          <button id="chat-send" class="btn-chat-send" title="Send message (Enter)">Send ➤</button>
+        </div>
+        <div class="chat-dock-footer">
+          <span class="chat-hint"><kbd>Enter</kbd> to send, <kbd>Shift+Enter</kbd> for new line</span>
+          <button id="chat-clear" class="btn-chat-clear" title="Clear conversation">
+            <span class="clear-icon">🗑️</span> Clear Chat
+          </button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tabChat -->
+
+  <!-- ── TAB 4: PROGRESS (Step 1.2.3 Snapshot-Based Progress) ── -->
+  <div id="tabProgress" class="tab-content hidden">
+    <div class="progress-tab-container">
+      <!-- Overall Progress Card -->
+      <div class="prog-overview-card">
+        <div class="poc-top">
+          <div>
+            <span class="poc-sub">SNAPSHOT PROJECT PROGRESS</span>
+            <h3 class="poc-title">Architectural Completion</h3>
+          </div>
+          <div class="poc-pct-wrap">
+            <span id="progress-overall-pct" class="poc-pct">0%</span>
+            <button id="btn-refresh-progress" class="btn-prog-refresh" title="Recalculate Progress">⟳ Refresh</button>
+            <button id="btn-force-rescan" class="btn-prog-refresh" title="Force re-scan AST files">🔄 Force Rescan</button>
+          </div>
+        </div>
+        <div class="poc-track">
+          <div id="progress-overall" class="poc-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- AI Project Insights Card (Step 3) -->
+      <div id="ai-insights-card" class="prog-ai-card">
+        <div class="pai-header">
+          <div class="pai-badge-wrap">
+            <span class="ai-powered-badge" id="ai-powered-badge">✨ Powered by AI</span>
+            <span class="pai-timestamp" id="ai-analyzed-time">AST Ready</span>
+          </div>
+          <button id="btn-analyze-ai" class="btn-ai-analyze" title="Run AI Project Understanding">⚡ Deep AI Analysis</button>
+        </div>
+        <div class="pai-grid">
+          <div class="pai-item">
+            <span class="pai-label">Architecture</span>
+            <span id="ai-arch-pattern" class="pai-value">Detecting…</span>
+          </div>
+          <div class="pai-item">
+            <span class="pai-label">Domain</span>
+            <span id="ai-domain" class="pai-value">Software Project</span>
+          </div>
+        </div>
+        <div class="pai-row">
+          <span class="pai-label">Tech Stack:</span>
+          <div id="ai-tech-stack" class="pai-tags"><span class="pai-tag">Scanning…</span></div>
+        </div>
+        <div class="pai-row">
+          <span class="pai-label">Domain Entities:</span>
+          <div id="ai-domain-entities" class="pai-tags"><span class="pai-tag">Scanning…</span></div>
+        </div>
+      </div>
+
+      <!-- Modules Breakdown -->
+      <div class="prog-section">
+        <span class="prog-sec-label">Architectural Modules:</span>
+        <div id="progress-modules" class="prog-modules-grid"></div>
+      </div>
+
+      <!-- File Status Sections -->
+      <div class="prog-files-grid">
+        <div class="prog-file-box pfb-ready">
+          <h4>✅ Ready Blueprint Files</h4>
+          <ul id="progress-ready" class="prog-list"></ul>
+        </div>
+        <div class="prog-file-box pfb-partial">
+          <h4>⚠️ Partial / In-Progress Files</h4>
+          <ul id="progress-partial" class="prog-list"></ul>
+        </div>
+        <div class="prog-file-box pfb-missing">
+          <h4>❌ Missing Blueprint Files</h4>
+          <ul id="progress-missing" class="prog-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tabProgress -->
+
+  <!-- ── TAB 5: PROMPT (Renamed Co-Pilot) ──────────────── -->
+  <div id="tabPrompt" class="tab-content hidden">
+
+    <!-- Active Security Rules Strip -->
+    <div class="rules-strip-wrap">
+      <div class="rules-strip-header">
+        <div class="rsh-left">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1l6 3v4c0 3.5-2.5 6-6 7C2.5 14 0 11.5 0 8V4l8-3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          </svg>
+          <span>Enforced Security Rules:</span>
+        </div>
+        <div class="rsh-right" style="display:flex; align-items:center; gap:8px;">
+          <span id="ruleStripCount" class="rsh-badge">4 Active</span>
+          <button id="btn-prompt-history" class="btn-prompt-history" type="button" title="View prompt history for this project">📜 History (0)</button>
+        </div>
+      </div>
+
+      <div class="pill-grid compact-grid" id="pillGrid">
+        <button class="pill active" data-rule="zero-secrets">
+          <span class="pill-dot"></span>Zero Secrets
+        </button>
+        <button class="pill active" data-rule="zod-validation">
+          <span class="pill-dot"></span>Zod Validation
+        </button>
+        <button class="pill active" data-rule="sql-guard">
+          <span class="pill-dot"></span>SQL Guard
+        </button>
+        <button class="pill active" data-rule="no-eval">
+          <span class="pill-dot"></span>No eval()
+        </button>
+        <button class="pill" data-rule="rate-limit">
+          <span class="pill-dot"></span>Rate Limiting
+        </button>
+        <button class="pill" data-rule="xss-guard">
+          <span class="pill-dot"></span>XSS Guard
+        </button>
+      </div>
+    </div>
+
+    <!-- Prompt History Dropdown / Modal Panel -->
+    <div id="prompt-history-dropdown" class="prompt-history-dropdown hidden">
+      <div class="ph-header">
+        <div class="ph-title-group">
+          <span class="ph-icon">📜</span>
+          <span class="ph-title">Prompt History</span>
+          <span id="prompt-history-badge" class="ph-count-badge">0</span>
+        </div>
+        <button id="btn-close-prompt-history" class="btn-ph-close" type="button" title="Close history">✕</button>
+      </div>
+      <div id="prompt-history-list" class="prompt-history-list">
+        <div class="ph-empty-msg">No prompts generated yet for this project.</div>
+      </div>
+    </div>
+
+    <!-- Strict Prompt Preview Panel (Step 1 & Polish Upgrade) -->
+    <div id="strict-prompt-panel" class="strict-prompt-panel hidden">
+      <div class="spp-header">
+        <div class="spp-left">
+          <span class="spp-badge">STRICT PROMPT PREVIEW</span>
+          <span id="prompt-gen-status" class="prompt-gen-status"></span>
+        </div>
+        <div class="spp-actions">
+          <button id="btn-prompt-history-spp" class="btn-spp btn-prompt-history" type="button" title="View prompt history for this project">
+            📜 History (0)
+          </button>
+          <button id="btn-edit-prompt" class="btn-spp" title="Edit prompt before copying">
+            ✎ Edit
+          </button>
+          <button id="btn-regenerate-prompt" class="btn-spp" title="Regenerate prompt from plan">
+            🔄 Regenerate
+          </button>
+          <button id="btn-diff-prompt" class="btn-spp hidden" title="Compare with previous prompt">
+            ⚖ Compare with previous
+          </button>
+          <button id="btn-copy-prompt" class="btn-spp" title="Copy ready prompt to clipboard">
+            📋 Copy to Clipboard
+          </button>
+          <button id="btn-download-prompt" class="btn-spp" title="Download markdown prompt">
+            📥 Download as .md
+          </button>
+        </div>
+      </div>
+      <div id="prompt-preview" class="prompt-preview-wrap">
+        <textarea id="prompt-preview-text" class="prompt-preview-text" readonly spellcheck="false"></textarea>
+        <div id="prompt-diff-container" class="prompt-diff-container hidden"></div>
+      </div>
+    </div>
+
+    <!-- Empty State when no prompt exists -->
+    <div id="prompt-empty-state" class="prompt-empty-state">
+      <div class="empty-state-icon">📋</div>
+      <div class="empty-state-title">No prompt yet</div>
+      <div class="empty-state-desc">
+        Go to <strong>Chat tab</strong> → describe your feature → choose an option → <strong>Approve</strong>.<br/>
+        Your strict prompt will appear here automatically.
+      </div>
+    </div>
+
+  </div><!-- /tabPrompt -->
+
+  <!-- Alias for backwards compatibility: tabCopilot -->
+  <div id="tabCopilot" class="tab-content hidden" style="display:none;"></div>
+
+  <!-- ── TAB 6: VERIFY (New) ───────────────────────────── -->
+  <div id="tabVerify" class="tab-content hidden">
+    <div class="verify-container">
+      <div class="tab-section-intro">
+        <div class="tsi-row">
+          <div>
+            <div class="verify-header-title-row">
+              <h3>Post-Execution Verification</h3>
+              <span class="verify-beta-badge" id="verify-beta-badge">BETA 0.1</span>
+            </div>
+            <p>Re-scan your project after Anti-Gravity finishes implementation. Inspect changes, risks, and guardrail compliance.</p>
+          </div>
+          <button id="btn-rescan-project" class="btn-rescan">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+              <path d="M14 8A6 6 0 118 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M14 2v6h-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Re-scan Project
+          </button>
+        </div>
+      </div>
+
+      <div id="verify-status" class="verify-status"></div>
+
+      <div id="verify-empty" class="verify-empty-state">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" opacity="0.35">
+          <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M16 10v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <p>No verification report yet. Click <strong>"Re-scan Project"</strong> to run a post-execution audit.</p>
+      </div>
+
+      <div id="verify-report" class="verify-report hidden">
+        <!-- 1. "Big Verdict" Banner at the Top -->
+        <div id="verify-verdict-banner" class="vr-verdict-banner verdict-red">
+          <div class="vr-verdict-content">
+            <div class="vr-verdict-header">
+              <h2 id="verify-verdict-title" class="vr-verdict-title">⚠️ Implementation Incomplete</h2>
+              <span id="verify-verdict-badge" class="vr-verdict-badge">FIX REQUIRED</span>
+              <span id="verify-rate-limit-badge" class="badge-rate-limited hidden" style="font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); margin-left: 8px;">⚠️ AI Rate-Limited (Using Static Analysis)</span>
+            </div>
+            <p id="verify-verdict-subtitle" class="vr-verdict-subtitle">Action required — missing files or logic issues detected.</p>
+          </div>
+        </div>
+
+        <!-- 2. Production Readiness Score Hero Card (Circular Progress Ring) -->
+        <div class="vr-readiness-hero-card">
+          <div class="vr-ring-container">
+            <svg class="vr-progress-ring" width="110" height="110" viewBox="0 0 100 100">
+              <circle class="vr-ring-bg" cx="50" cy="50" r="40" stroke-width="8" fill="transparent"/>
+              <circle id="verify-score-ring" class="vr-ring-fill ring-yellow" cx="50" cy="50" r="40" stroke-width="8" fill="transparent" stroke-dasharray="251.32" stroke-dashoffset="100" stroke-linecap="round"/>
+            </svg>
+            <div class="vr-ring-text">
+              <span id="verify-readiness-score" class="vr-ring-number">0%</span>
+              <span class="vr-ring-label">Readiness</span>
+            </div>
+          </div>
+          <div class="vr-readiness-hero-details">
+            <div class="vr-readiness-badge-row">
+              <span id="verify-readiness-status-badge" class="vr-readiness-status-badge badge-red">NOT READY</span>
+              <span id="verify-ai-badge" class="vr-ai-badge hidden">⚡ AI Verified</span>
+              <span id="verify-cached-badge" class="vr-cached-badge hidden" style="font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 600; background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3);">📦 Cached Result (No changes detected)</span>
+              <span id="verify-fallback-badge" class="badge-rate-limited hidden" title="AI limit reached. Verification is running via local rule-based audit." style="font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 600; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.35);">🚫 API Limit Exceeded (Rule-Based Audit)</span>
+            </div>
+            <h3 id="verify-readiness-title" class="vr-readiness-title">Production Readiness Audit</h3>
+            <p id="verify-readiness-subtitle" class="vr-readiness-subtitle">Evaluates architecture separation, code quality, security guardrails, and error resilience.</p>
+            <div class="vr-readiness-meta">
+              <span>Timestamp: <span id="verify-timestamp">-</span></span>
+              <span>Snapshot ID: <span id="verify-snapshot-id">-</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Hero Fix Button -->
+        <div id="verify-fix-hero" class="verify-fix-hero">
+          <button id="btn-generate-fix-prompt" class="btn-hero-fix">
+            <span class="btn-hero-icon">🛠️</span>
+            <span class="btn-hero-text">Generate Fix Prompt to Complete Task</span>
+          </button>
+          <p class="verify-fix-explainer">Copy this prompt and give it to Anti-Gravity to fix the remaining issues.</p>
+        </div>
+
+        <!-- 4. Category Breakdown Grid (Architecture, Code Quality, Security, Error Handling) -->
+        <div class="vr-categories-grid">
+          <!-- Architecture Card (30% weight) -->
+          <div id="vr-cat-architecture" class="vr-category-card">
+            <div class="vr-cat-header">
+              <div class="vr-cat-title-wrap">
+                <span class="vr-cat-icon">🏗️</span>
+                <div>
+                  <h4 class="vr-cat-name">Architecture</h4>
+                  <span class="vr-cat-weight">30% Weight</span>
+                </div>
+              </div>
+              <span id="vr-cat-arch-score" class="vr-cat-score-badge">0 / 30 pts</span>
+            </div>
+            <div class="vr-cat-progress-wrap">
+              <div id="vr-cat-arch-bar" class="vr-cat-progress-bar" style="width: 0%;"></div>
+            </div>
+            <ul id="vr-cat-arch-list" class="vr-cat-checklist"></ul>
+          </div>
+
+          <!-- Code Quality Card (30% weight) -->
+          <div id="vr-cat-quality" class="vr-category-card">
+            <div class="vr-cat-header">
+              <div class="vr-cat-title-wrap">
+                <span class="vr-cat-icon">💎</span>
+                <div>
+                  <h4 class="vr-cat-name">Code Quality</h4>
+                  <span class="vr-cat-weight">30% Weight</span>
+                </div>
+              </div>
+              <span id="vr-cat-quality-score" class="vr-cat-score-badge">0 / 30 pts</span>
+            </div>
+            <div class="vr-cat-progress-wrap">
+              <div id="vr-cat-quality-bar" class="vr-cat-progress-bar" style="width: 0%;"></div>
+            </div>
+            <ul id="vr-cat-quality-list" class="vr-cat-checklist"></ul>
+          </div>
+
+          <!-- Security Card (20% weight) -->
+          <div id="vr-cat-security" class="vr-category-card">
+            <div class="vr-cat-header">
+              <div class="vr-cat-title-wrap">
+                <span class="vr-cat-icon">🛡️</span>
+                <div>
+                  <h4 class="vr-cat-name">Security</h4>
+                  <span class="vr-cat-weight">20% Weight</span>
+                </div>
+              </div>
+              <span id="vr-cat-security-score" class="vr-cat-score-badge">0 / 20 pts</span>
+            </div>
+            <div class="vr-cat-progress-wrap">
+              <div id="vr-cat-security-bar" class="vr-cat-progress-bar" style="width: 0%;"></div>
+            </div>
+            <ul id="vr-cat-security-list" class="vr-cat-checklist"></ul>
+          </div>
+
+          <!-- Error Handling Card (20% weight) -->
+          <div id="vr-cat-error" class="vr-category-card">
+            <div class="vr-cat-header">
+              <div class="vr-cat-title-wrap">
+                <span class="vr-cat-icon">⚡</span>
+                <div>
+                  <h4 class="vr-cat-name">Error Handling</h4>
+                  <span class="vr-cat-weight">20% Weight</span>
+                </div>
+              </div>
+              <span id="vr-cat-error-score" class="vr-cat-score-badge">0 / 20 pts</span>
+            </div>
+            <div class="vr-cat-progress-wrap">
+              <div id="vr-cat-error-bar" class="vr-cat-progress-bar" style="width: 0%;"></div>
+            </div>
+            <ul id="vr-cat-error-list" class="vr-cat-checklist"></ul>
+          </div>
+        </div>
+
+        <!-- 5. Next Actions Checklist (Road to 100% Production Readiness) -->
+        <div class="vr-next-actions-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin: 0; color: #a855f7; display: flex; align-items: center; gap: 8px;">
+              <span>🎯 Road to 100% Production Readiness</span>
+            </h4>
+            <span style="font-size: 11px; color: #94a3b8;">Missing requirements checklist</span>
+          </div>
+          <ul id="verify-next-actions" class="vr-checklist"></ul>
+        </div>
+
+        <!-- 6. Collapsed Advanced Technical & Legacy Details (Preserved for tests) -->
+        <details id="vr-technical-accordion" class="vr-technical-accordion" style="display: none;">
+          <summary class="vr-technical-summary">
+            <span class="vr-technical-title">🔧 Advanced Technical Details</span>
+            <span class="vr-technical-hint">Click to expand</span>
+          </summary>
+          <div class="vr-technical-body">
+            <div id="vr-contracts-card" class="vr-card vr-contracts">
+              <h4>🔗 Integration Contracts</h4>
+              <span id="verify-contracts-badge" class="vr-contract-badge badge-passed">Passed</span>
+              <ul id="verify-contracts-list" class="vr-list"></ul>
+            </div>
+            <div class="vr-score-card">
+              <span id="verify-risk-score" class="vr-risk-number risk-low">0</span>
+              <span id="verify-risk-label" class="vr-risk-label risk-low">Low Risk</span>
+              <div id="verify-risk-bar" class="vr-progress-bar risk-low" style="width: 5%;"></div>
+              <span id="verify-arch-badge" class="badge-production-arch hidden">✅ Production Architecture Selected</span>
+            </div>
+            <div class="vr-sections-grid vr-sections-primary">
+              <ul id="verify-done" class="vr-list"></ul>
+              <ul id="verify-missed" class="vr-list"></ul>
+              <div id="vr-violations-card"><ul id="verify-violations" class="vr-list"></ul></div>
+            </div>
+            <div id="vr-broken-imports-card"><ul id="verify-broken-imports" class="vr-list"></ul></div>
+            <div id="vr-regressions-card"><ul id="verify-regressions" class="vr-list"></ul></div>
+            <div class="vr-card vr-partial hidden"><ul id="verify-partial" class="vr-list"></ul></div>
+            <details id="vr-issues-accordion" class="vr-accordion hidden" style="display:none;"><span id="vr-issues-count">0</span></details>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: WORKFLOW (Dedicated 6-Phase Lifecycle Guide) ── -->
+  <section id="tab-workflow" class="tab-content hidden">
+    <div class="workflow-tab-container">
+      <div class="tab-section-intro">
+        <div class="wf-intro-header">
+          <div class="wf-intro-icon">🔄</div>
+          <div class="wf-intro-text">
+            <h3>Development Workflow Cycle</h3>
+            <p>The standard 6-phase developer lifecycle to brainstorm, build, verify, and polish features with PromptLock &amp; Anti-Gravity AI.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow-tab-body">
+        <div class="workflow-timeline">
+
+          <!-- Phase 1: Brainstorming (Indigo) -->
+          <div class="wf-step-item wf-indigo">
+            <div class="wf-rail">
+              <div class="wf-circle" title="Phase 1: Brainstorming">
+                <span class="wf-circle-icon">💬</span>
+              </div>
+              <div class="wf-connector"></div>
+            </div>
+            <div class="wf-content">
+              <div class="wf-node-header">
+                <h4 class="wf-node-title">Brainstorming</h4>
+                <span class="wf-tag tag-indigo">Normal Chat</span>
+              </div>
+              <p class="wf-node-desc">Discuss ideas in Normal Chat.</p>
+            </div>
+          </div>
+
+          <!-- Phase 2: Blueprint (Emerald) -->
+          <div class="wf-step-item wf-emerald">
+            <div class="wf-rail">
+              <div class="wf-circle" title="Phase 2: Blueprint">
+                <span class="wf-circle-icon">➕</span>
+              </div>
+              <div class="wf-connector"></div>
+            </div>
+            <div class="wf-content">
+              <div class="wf-node-header">
+                <h4 class="wf-node-title">Blueprint</h4>
+                <span class="wf-tag tag-emerald">Add Feature</span>
+              </div>
+              <p class="wf-node-desc">Generate architecture options in Add Feature.</p>
+            </div>
+          </div>
+
+          <!-- Phase 3: Execution (Blue) -->
+          <div class="wf-step-item wf-blue">
+            <div class="wf-rail">
+              <div class="wf-circle" title="Phase 3: Execution">
+                <span class="wf-circle-icon">🚀</span>
+              </div>
+              <div class="wf-connector"></div>
+            </div>
+            <div class="wf-content">
+              <div class="wf-node-header">
+                <h4 class="wf-node-title">Execution</h4>
+                <span class="wf-tag tag-blue">Prompt Generator</span>
+              </div>
+              <p class="wf-node-desc">Copy Strict Prompt to Anti-Gravity.</p>
+            </div>
+          </div>
+
+          <!-- Phase 4: Verification (Amber) -->
+          <div class="wf-step-item wf-amber">
+            <div class="wf-rail">
+              <div class="wf-circle" title="Phase 4: Verification">
+                <span class="wf-circle-icon">🔍</span>
+              </div>
+              <div class="wf-connector"></div>
+            </div>
+            <div class="wf-content">
+              <div class="wf-node-header">
+                <h4 class="wf-node-title">Verification</h4>
+                <span class="wf-tag tag-amber">Verify Tab</span>
+              </div>
+              <p class="wf-node-desc">Re-scan in Verify Tab for Production Score.</p>
+            </div>
+          </div>
+
+          <!-- Phase 5: Bug Loop (Red) -->
+          <div class="wf-step-item wf-red">
+            <div class="wf-rail">
+              <div class="wf-circle" title="Phase 5: Bug Loop">
+                <span class="wf-circle-icon">🐞</span>
+              </div>
+              <div class="wf-connector"></div>
+            </div>
+            <div class="wf-content">
+              <div class="wf-node-header">
+                <h4 class="wf-node-title">Bug Loop</h4>
+                <span class="wf-tag tag-red">Fix Bug</span>
+              </div>
+              <p class="wf-node-desc">Fix errors quickly using Fix Bug mode.</p>
+            </div>
+          </div>
+
+          <!-- Phase 6: Polish (Purple) -->
+          <div class="wf-step-item wf-purple">
+            <div class="wf-rail">
+              <div class="wf-circle" title="Phase 6: Polish">
+                <span class="wf-circle-icon">✨</span>
+              </div>
+            </div>
+            <div class="wf-content">
+              <div class="wf-node-header">
+                <h4 class="wf-node-title">Polish</h4>
+                <span class="wf-tag tag-purple">Update Feature</span>
+              </div>
+              <p class="wf-node-desc">Refactor and improve using Update Feature.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SETTINGS MODAL (UI Only — No API calls) ───────── -->
+  <div id="settingsModal" class="settings-modal hidden">
+    <div class="settings-dialog">
+      <div class="sd-header">
+        <div class="sd-title">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M8 10a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M13.2 9.5a1 1 0 00.2 1.1l.1.1a1.2 1.2 0 010 1.7l-.8.8a1.2 1.2 0 01-1.7 0l-.1-.1a1 1 0 00-1.1-.2 1 1 0 00-.6.9v.3a1.2 1.2 0 01-1.2 1.2h-1.2a1.2 1.2 0 01-1.2-1.2v-.3a1 1 0 00-.6-.9 1 1 0 00-1.1.2l-.1.1a1.2 1.2 0 01-1.7 0l-.8-.8a1.2 1.2 0 010-1.7l.1-.1a1 1 0 00.2-1.1 1 1 0 00-.9-.6H2.5A1.2 1.2 0 011.3 8.7V7.5a1.2 1.2 0 011.2-1.2h.3a1 1 0 00.9-.6 1 1 0 00-.2-1.1l-.1-.1a1.2 1.2 0 010-1.7l.8-.8a1.2 1.2 0 011.7 0l.1.1a1 1 0 001.1.2 1 1 0 00.6-.9V3a1.2 1.2 0 011.2-1.2h1.2A1.2 1.2 0 019.5 3v.3a1 1 0 00.6.9 1 1 0 001.1-.2l.1-.1a1.2 1.2 0 011.7 0l.8.8a1.2 1.2 0 010 1.7l-.1.1a1 1 0 00-.2 1.1 1 1 0 00.9.6h.3a1.2 1.2 0 011.2 1.2v1.2a1.2 1.2 0 01-1.2 1.2h-.3a1 1 0 00-.9.6z" stroke="currentColor" stroke-width="1.3"/>
+          </svg>
+          AI Provider Settings
+        </div>
+        <button id="btnCloseSettings" class="wc wc-close" title="Close Settings">
+          <svg width="7" height="7" viewBox="0 0 7 7"><path d="M1 1l5 5M6 1L1 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="sd-body">
+        <!-- Live Provider Badge (Task 11 & 14) -->
+        <div class="sd-provider-badge">
+          <span class="sd-provider-dot" id="sd-provider-dot"></span>
+          <span id="sd-provider-label">Checking provider...</span>
+        </div>
+
+        <div class="sd-form-group">
+          <label for="ai-provider" class="sd-label">AI Provider:</label>
+          <div class="select-wrapper">
+            <select id="ai-provider" class="agent-dropdown">
+              <option value="groq" selected>Groq (qwen/qwen3.8-27b — Ultra-fast)</option>
+              <option value="gemini">Google Gemini (gemini-2.5-flash)</option>
+              <option value="openai">OpenAI (gpt-4o-mini)</option>
+              <option value="anthropic">Anthropic (claude-3-5-sonnet)</option>
+              <option value="openrouter">OpenRouter (Multi-Model Gateway)</option>
+              <option value="ollama">Ollama (Local Private LLM)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sd-form-group">
+          <label for="api-key" class="sd-label">API Key / Token:</label>
+          <input
+            id="api-key"
+            type="password"
+            class="sd-input"
+            placeholder="sk-••••••••••••••••••••••••••••••••"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="sd-hint">Never committed or logged. Saved directly to local session storage.</span>
+        </div>
+
+        <div class="sd-actions">
+          <span id="aiSettingsStatus" class="sd-status"></span>
+          <button id="btnTestConnection" type="button" class="btn-test-connection">⚡ Test Connection</button>
+          <button id="save-ai-settings" class="btn-save-settings">Save AI Settings</button>
+        </div>
+
+        <!-- Storage Stats & Backups (Tasks 15, 21, 22, 23) -->
+        <div class="sd-storage-section">
+          <div class="sd-sec-header">
+            <span>💾 Project Storage Stats</span>
+            <button id="btn-refresh-stats" type="button" class="btn-stat-refresh" title="Refresh storage stats">⟳</button>
+          </div>
+          <div class="sd-stats-grid">
+            <div class="sd-stat-box">
+              <span class="sd-stat-val" id="sds-project-count">--</span>
+              <span class="sd-stat-lbl">Projects</span>
+            </div>
+            <div class="sd-stat-box">
+              <span class="sd-stat-val" id="sds-disk-usage">--</span>
+              <span class="sd-stat-lbl">Disk Usage</span>
+            </div>
+            <div class="sd-stat-box">
+              <span class="sd-stat-val" id="sds-snapshot-count">--</span>
+              <span class="sd-stat-lbl">Snapshots</span>
+            </div>
+          </div>
+          <div class="sd-storage-actions">
+            <button id="btn-export-project" type="button" class="btn-storage-tool">📦 Export Project (.zip)</button>
+            <button id="btn-import-project" type="button" class="btn-storage-tool">📥 Import Project</button>
+            <button id="btn-clear-project" type="button" class="btn-storage-tool btn-danger-tool">🗑️ Delete Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STATUS BAR ─────────────────────────── -->
+  <footer class="p-status">
+    <span id="statusMsg" class="status-text">Ready — ⌘⇧G to toggle</span>
+    <div class="status-right">
+      <span class="status-rule-count" id="ruleCount">4 rules active</span>
+      <span class="status-kbd">⌘⇧G</span>
+    </div>
+  </footer>
+
+</div><!-- /panel -->
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- Tab Controllers & App Logic -->
+<script src="tabs/chat-tab.js"></script>
+<script src="tabs/progress-tab.js"></script>
+<script src="tabs/prompt-tab.js"></script>
+<script src="tabs/verify-tab.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
