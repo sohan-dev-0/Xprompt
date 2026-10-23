@@ -1,6 +1,6 @@
-# PromptLock — Testing & Verification Guide
+# Xprompt — Testing & Verification Guide
 
-This guide covers running the automated test suites, performance benchmarks, and manual QA checklists for PromptLock v2.0.
+This guide covers running the automated test suites, performance benchmarks, and manual QA checklists for Xprompt v2.0.
 
 ---
 
@@ -51,7 +51,7 @@ Starts Electron with dev tools and live window reloading enabled.
 ## 📋 Step-by-Step Manual QA Checklist
 
 ### Step 1: Glassmorphism Floating Overlay
-- [ ] Launch PromptLock (`npm start`).
+- [ ] Launch Xprompt (`npm start`).
 - [ ] Verify the floating window appears with glassmorphism styling (`backdrop-filter: blur`).
 - [ ] Verify window pinning / dragging / minimize / close buttons function smoothly.
 - [ ] Confirm top navigation tabs: **Chat**, **Roadmap**, **Progress**, **Scanner**, **Prompt**.
@@ -62,7 +62,7 @@ Starts Electron with dev tools and live window reloading enabled.
 - [ ] Verify file tree renders with LOC, file size, extension, and git status.
 - [ ] Verify 8-metric health analysis displays (Files Scanned, AST Parsed, Dependencies, Risky Imports, etc.).
 - [ ] Make a file edit in your workspace; observe AST re-scan within 500ms.
-- [ ] Verify snapshots are persisted across app restarts in `~/.promptlock/projects/{projectId}/snapshots.json`.
+- [ ] Verify snapshots are persisted across app restarts in `~/.xprompt/projects/{projectId}/snapshots.json`.
 
 ### Step 3: AI Service Layer & Fallback
 - [ ] Open Settings modal (⚙ gear icon).
@@ -100,13 +100,13 @@ ANTHROPIC_API_KEY=your_anthropic_api_key
 2. **Gemini**: Uses `gemini-2.5-flash` via `@google/generative-ai`.
 3. **OpenAI**: Uses `gpt-4o-mini` with bearer auth.
 4. **Anthropic**: Uses `claude-3-5-sonnet-latest` with `x-api-key` header.
-5. **Fallback Simulation**: Temporarily set an invalid key or disconnect network; verify PromptLock logs `[AI Service] Attempting fallback candidate...` and delivers a safe structured response without crashing.
+5. **Fallback Simulation**: Temporarily set an invalid key or disconnect network; verify Xprompt logs `[AI Service] Attempting fallback candidate...` and delivers a safe structured response without crashing.
 
 ---
 
 ## 🔀 Testing Multi-Project Switching
 
-PromptLock isolates all data per project using SHA-256 project IDs (`16-hex` format).
+Xprompt isolates all data per project using SHA-256 project IDs (`16-hex` format).
 
 1. Open **Project A** (e.g., `/path/to/project-a`).
 2. Add a chat message: `"Implement payments"`.
@@ -115,22 +115,22 @@ PromptLock isolates all data per project using SHA-256 project IDs (`16-hex` for
 5. Switch back to **Project A**:
    - Verify Project A's chat history restores `"Implement payments"`.
    - Verify Project B's history is not leaked or intermixed.
-6. Check `~/.promptlock/projects/`:
+6. Check `~/.xprompt/projects/`:
    - Verify separate subdirectories exist for each project ID.
 
 ---
 
 ## 🗑 Resetting App Data
 
-To completely reset PromptLock settings and per-project storage:
+To completely reset Xprompt settings and per-project storage:
 
 ### macOS / Linux
 ```bash
 # Remove all persisted per-project sessions, snapshots, and settings:
-rm -rf ~/.promptlock
+rm -rf ~/.xprompt
 ```
 
-### Via PromptLock UI
+### Via Xprompt UI
 1. Open the **Settings** modal (⚙ icon).
 2. Under **Storage Stats**, view current disk usage and project count.
 3. In Recent Projects, click **🗑️ Delete Data** next to any project to purge its records.

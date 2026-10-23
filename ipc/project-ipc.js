@@ -1,5 +1,5 @@
 /**
- * PromptLock — Project Management IPC Handler
+ * Xprompt — Project Management IPC Handler
  *
  * Manages active project context, switching between projects, recent projects list,
  * and auto-loading on startup.
@@ -407,7 +407,7 @@ function register(getWindow, astEngineRef) {
         const win = typeof getWindow === 'function' ? getWindow() : null;
         const { filePath, canceled } = await dialog.showSaveDialog(win, {
           title: 'Export Project Session Data',
-          defaultPath: `promptlock-project-${projectId}.zip`,
+          defaultPath: `xprompt-project-${projectId}.zip`,
           filters: [{ name: 'Zip Archives', extensions: ['zip'] }],
         });
         if (canceled || !filePath) return { success: false, canceled: true };

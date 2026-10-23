@@ -1,5 +1,5 @@
 /**
- * PromptLock — Secure Preload Bridge (Step 1 & 2 Upgrade)
+ * Xprompt — Secure Preload Bridge (Step 1 & 2 Upgrade)
  *
  * Exposes strictly typed APIs to the renderer process via contextBridge.
  * Follows security principles: contextIsolation: true, nodeIntegration: false.
@@ -189,6 +189,9 @@ const apiBridge = {
 
 // Expose window.api as specified
 contextBridge.exposeInMainWorld('api', apiBridge);
+
+// Expose window.xprompt
+contextBridge.exposeInMainWorld('xprompt', apiBridge);
 
 // Expose window.promptLock for complete backward compatibility
 contextBridge.exposeInMainWorld('promptLock', apiBridge);

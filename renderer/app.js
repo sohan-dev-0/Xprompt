@@ -1,9 +1,9 @@
 (() => {
 /* ═══════════════════════════════════════════════════════════════
-   PromptLock — Unified AI Guardrail Co-Pilot Logic v2.0
+   Xprompt — Unified AI Guardrail Co-Pilot Logic v2.0
    Unified Chat & Ready-Made Guardrail Prompt Generator
 ════════════════════════════════════════════════════════════════ */
-const api = window.promptLock || window.api;
+const api = window.xprompt || window.promptLock || window.api;
 
 // ── State ─────────────────────────────────────────────────────
 let isExpanded = false;
@@ -28,7 +28,7 @@ const state = {
   lastGeneratedPrompt: null,
 };
 
-window._promptLockSession = state;
+window._xpromptSession = window._promptLockSession = state;
 
 /** Cleanup fn returned by api.onAstUpdate — removes the IPC listener */
 let astCleanup = null;
@@ -1146,7 +1146,7 @@ Please think step by step:
 // ══════════════════════════════════════════════════════════════
 function initFeed() {
   if (!copilotFeed) return;
-  const proj = state.currentDir ? (state.currentDir.split('/').pop() || 'PromptLock') : 'your project';
+  const proj = state.currentDir ? (state.currentDir.split('/').pop() || 'Xprompt') : 'your project';
   copilotFeed.innerHTML = `
     <div class="copilot-welcome-card">
       <div class="cwc-icon">
@@ -1158,7 +1158,7 @@ function initFeed() {
         </svg>
       </div>
       <div class="cwc-body">
-        <div class="cwc-title">PromptLock AI Guardrail Co-Pilot</div>
+        <div class="cwc-title">Xprompt AI Guardrail Co-Pilot</div>
         <div>Tell me what feature or code change you want to build in <strong>${escapeHtml(proj)}</strong>. I will automatically enforce your security guardrails and generate a <strong>Ready-Made Prompt Box</strong> formatted for your chosen Target AI!</div>
       </div>
     </div>
@@ -1283,7 +1283,7 @@ async function handleGeneratePrompt(promptText) {
 
   // 2. Show thinking indicator
   const agentInfo = AGENTS[state.selectedAgent] || AGENTS.cursor;
-  if (copilotThinkingLabel) copilotThinkingLabel.textContent = `PromptLock AI analyzing your request…`;
+  if (copilotThinkingLabel) copilotThinkingLabel.textContent = `Xprompt AI analyzing your request…`;
   if (copilotThinking) copilotThinking.classList.remove('hidden');
   if (btnSendChat) btnSendChat.disabled = true;
   if (btnSendChatText) btnSendChatText.textContent = 'Analyzing…';
@@ -1312,7 +1312,7 @@ async function handleGeneratePrompt(promptText) {
     // ── AI responded — render the AI message with options/plan ─────────────
     appendAiChatBubble(aiResponse, text);
     persistSession();
-    showToast('⚡ PromptLock AI responded!');
+    showToast('⚡ Xprompt AI responded!');
   } else {
     // ── AI unavailable — fall back to local guardrail prompt generation ────
     copilotThinkingLabel.textContent = `Formatting guardrail prompt for ${agentInfo.name}…`;

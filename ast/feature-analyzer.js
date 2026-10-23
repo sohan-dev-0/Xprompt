@@ -1,5 +1,5 @@
 /**
- * PromptLock — AST Feature Analyzer (Step 2.4.2 Upgrade)
+ * Xprompt — AST Feature Analyzer (Step 2.4.2 Upgrade)
  *
  * Analyzes developer feature requests against workspace AST metadata and project memory.
  * Synthesizes required files, missing files, progress, and available A/B/C approaches.
@@ -96,7 +96,7 @@ const VAGUE_TERMS = new Set([
   'text', 'test', 'testing', 'hello', 'hi', 'hey', 'yo', 'sup', 'hola',
   'help', 'help me', 'asdf', 'foo', 'bar', 'baz', 'temp', 'sample', 'example',
   'what can you do', 'what is this', 'demo', 'ok', 'okay', 'yes', 'no',
-  'who are you', 'promptlock', 'please', 'thanks', 'thank you', 'stuff', 'thing'
+  'who are you', 'xprompt', 'promptlock', 'please', 'thanks', 'thank you', 'stuff', 'thing'
 ]);
 
 const ACTION_VERBS = [
@@ -197,7 +197,7 @@ function analyzeFeature(featureText = '', snapshot = null, projectMemory = {}) {
       featureType: null,
       featureKey: null,
       clarificationMessage: `I received your message: **"${featureText.slice(0, 100)}"**.\n\n` +
-        `This is too brief or ambiguous to generate an architecture plan. PromptLock needs a specific feature to analyze against your project's AST.\n\n` +
+        `This is too brief or ambiguous to generate an architecture plan. Xprompt needs a specific feature to analyze against your project's AST.\n\n` +
         `**Examples of actionable feature requests:**\n` +
         `• *"Implement JWT user authentication with refresh tokens"*\n` +
         `• *"Add Stripe payment checkout session and webhook handler"*\n` +

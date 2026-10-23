@@ -1,5 +1,5 @@
 /**
- * PromptLock — Strict Prompt Tab Controller (Step 4 & Polish Update)
+ * Xprompt — Strict Prompt Tab Controller (Step 4 & Polish Update)
  *
  * Grounded strict guardrail prompt generator & viewer.
  * Features:
@@ -17,7 +17,7 @@
 (() => {
   'use strict';
 
-  const api = window.promptLock || window.api;
+  const api = window.xprompt || window.promptLock || window.api;
 
   // ── DOM Elements ─────────────────────────────────────────────────────────────
   const promptPreview       = document.getElementById('prompt-preview');
@@ -450,7 +450,7 @@
     try {
       const agent = lastMetadata?.agent || window._promptLockSession?.selectedAgent || 'guardrail';
       const dateStr = new Date().toISOString().slice(0, 10);
-      const filename = `promptlock-${agent}-${dateStr}.md`;
+      const filename = `xprompt-${agent}-${dateStr}.md`;
 
       const blob = new Blob([textToDownload], { type: 'text/markdown;charset=utf-8' });
       const url = URL.createObjectURL(blob);

@@ -1,8 +1,8 @@
-# PromptLock v2.0
+# Xprompt v2.0
 
 An AI Orchestrator and Guardrail Manager for Developers.
 
-PromptLock is a floating desktop overlay designed to sit alongside your IDE (Cursor, Claude Code, VS Code, or Anti-Gravity). Instead of blindly copy-pasting code to AI, PromptLock analyzes your workspace's AST structure in real-time. It helps you plan architectural approaches, enforces security rules, and generates strict guardrail prompts to prevent AI models from breaking your codebase.
+Xprompt is a floating desktop overlay designed to sit alongside your IDE (Cursor, Claude Code, VS Code, or Anti-Gravity). Instead of blindly copy-pasting code to AI, Xprompt analyzes your workspace's AST structure in real-time. It helps you plan architectural approaches, enforces security rules, and generates strict guardrail prompts to prevent AI models from breaking your codebase.
 
 ---
 
@@ -30,8 +30,8 @@ PromptLock is a floating desktop overlay designed to sit alongside your IDE (Cur
 
 ### 1. Clone & Install
 
-    git clone https://github.com/sohan-dev-0/PromptLock.git
-    cd PromptLock
+    git clone https://github.com/sohan-dev-0/Xprompt.git
+    cd Xprompt
     npm install
 
 ### 2. Configure Environment Variables
@@ -70,10 +70,10 @@ The easiest way to start the entire application (both the backend and the Electr
 
 ## How the AI Fallback System Works
 
-PromptLock ensures your workflow is never interrupted:
+Xprompt ensures your workflow is never interrupted:
 1. Primary Provider: Defaults to the AI_PROVIDER specified in your .env.
 2. Fallback Order: groq -> gemini -> openai -> Offline fallback.
-3. Adaptive Retry: If a provider hits a rate limit (429), is unavailable (503), or times out (30s), PromptLock automatically routes the request to the next available provider.
+3. Adaptive Retry: If a provider hits a rate limit (429), is unavailable (503), or times out (30s), Xprompt automatically routes the request to the next available provider.
 4. Zero Key Leaks: API keys are read securely from process.env or local storage. They are never logged or exposed to the renderer process.
 
 ---
@@ -101,7 +101,7 @@ PromptLock ensures your workflow is never interrupted:
             Main --> Store[storage/project-store.js]
             Main --> Rules[rules/prompt-builder.js]
             AI --> Adapters[Groq / Gemini / OpenAI / Anthropic Adapters]
-            Store --> Disk[(~/.promptlock/projects/{id}/)]
+            Store --> Disk[(~/.xprompt/projects/{id}/)]
         end
 
         subgraph Preload & IPC Bridge
@@ -131,7 +131,7 @@ PromptLock ensures your workflow is never interrupted:
 
 ## Testing
 
-PromptLock includes automated test suites covering the core pipeline:
+Xprompt includes automated test suites covering the core pipeline:
 
     npm test
     node test/performance-test.js
@@ -144,7 +144,7 @@ For manual QA checklists and recovery procedures, see TESTING.md.
 
 All project data, roadmaps, snapshots, and session archives are stored in your local user data directory:
 
-- macOS / Linux: ~/.promptlock/
+- macOS / Linux: ~/.xprompt/
   - projects/{projectId}/session.json — Active state and chat history
   - projects/{projectId}/roadmap.json — Project milestones and goals
   - projects/{projectId}/snapshots.json — Immutable AST snapshots (max 10)
@@ -157,4 +157,4 @@ All project data, roadmaps, snapshots, and session archives are stored in your l
 
 ## License
 
-MIT © PromptLock
+MIT © Xprompt

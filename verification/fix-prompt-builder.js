@@ -37,7 +37,7 @@ function buildFixPrompt({ originalPrompt = '', plan = null, verificationReport =
   const productionVerdict = verificationReport.productionVerdict || (productionScore >= 90 ? 'Production Ready' : productionScore >= 50 ? 'Needs Polish' : 'Not Production Ready');
 
   // Header
-  lines.push('# 🛠️ PromptLock Auto-Fix Prompt');
+  lines.push('# 🛠️ Xprompt Auto-Fix Prompt');
   lines.push('> Generated: ' + now);
   lines.push(`> Production Readiness Score: **${productionScore}% (${productionVerdict})**`);
   if (riskScore > 0) {

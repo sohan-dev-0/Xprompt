@@ -418,7 +418,7 @@ async function runTests() {
     });
 
     assert.ok(typeof fixPrompt === 'string', 'Fix prompt must be a string');
-    assert.ok(fixPrompt.includes('# 🛠️ PromptLock Auto-Fix Prompt'), 'Must contain Fix Prompt header');
+    assert.ok(fixPrompt.includes('# 🛠️ Xprompt Auto-Fix Prompt') || fixPrompt.includes('# 🛠️ PromptLock Auto-Fix Prompt'), 'Must contain Fix Prompt header');
     assert.ok(fixPrompt.includes('65 — High Risk'), 'Must include risk score and label');
     assert.ok(fixPrompt.includes('Original Task Prompt'), 'Must contain original prompt context');
     assert.ok(fixPrompt.includes('Build dark mode toggle'), 'Must include original prompt text');

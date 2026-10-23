@@ -1,5 +1,5 @@
 /**
- * PromptLock — Storage Migration Runner
+ * Xprompt — Storage Migration Runner
  *
  * Checks for legacy promptlock-session.json in userData and migrates it
  * to the new per-project isolated directory structure userData/projects/{projectId}/.

@@ -1,5 +1,5 @@
 /**
- * PromptLock — Snapshot-Based Project Progress Tab Controller (Step 1.2.3 Upgrade)
+ * Xprompt — Snapshot-Based Project Progress Tab Controller (Step 1.2.3 Upgrade)
  *
  * Displays snapshot-grounded project progress:
  *  - Overall completion percentage progress bar (0 - 100%)
@@ -10,7 +10,7 @@
 (() => {
   'use strict';
 
-  const api = window.promptLock || window.api;
+  const api = window.xprompt || window.promptLock || window.api;
 
   // ── DOM refs ──────────────────────────────────────────────────────────────────
   const progressOverall = document.getElementById('progress-overall');

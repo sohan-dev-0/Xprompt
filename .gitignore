@@ -8,7 +8,7 @@ node_modules/
 dist/
 build/
 
-# ─── PromptLock Data ─────────────────────────────────────────────────────────
+# ─── Xprompt Data ──────────────────────────────────────────────────────────
 userData/
 .test-user-data/
 *.db

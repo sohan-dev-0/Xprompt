@@ -1,5 +1,5 @@
 /**
- * PromptLock — Verify Tab Controller (Step 6 Simplified UI & Deterministic Engine)
+ * Xprompt — Verify Tab Controller (Step 6 Simplified UI & Deterministic Engine)
  *
  * Displays focused post-execution verification report:
  * 📊 Visual Risk Score Gauge + Progress Bar
@@ -13,7 +13,7 @@
 (() => {
   'use strict';
 
-  const api = window.promptLock || window.api;
+  const api = window.xprompt || window.promptLock || window.api;
 
   // ── DOM refs ──────────────────────────────────────────────────────────────────
   const btnRescan           = document.getElementById('btn-rescan-project');

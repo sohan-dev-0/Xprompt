@@ -1,5 +1,5 @@
 /**
- * PromptLock — Strict Prompt Builder (Step 4)
+ * Xprompt — Strict Prompt Builder (Step 4)
  *
  * Compiles approved execution plans into precision-engineered,
  * agent-tailored guardrail prompts with AST grounding and strict security boundaries.
@@ -937,7 +937,7 @@ async function buildStrictPrompt(params = {}) {
 
   // 6. Assemble Complete Deterministic Prompt
   let compiledPrompt = `<!-- ================================================================= -->
-<!-- PromptLock v2.0 Strict Guardrail Prompt                          -->
+<!-- Xprompt v2.0 Strict Guardrail Prompt                             -->
 <!-- Target: ${agentConfig.name}                                     -->
 <!-- Generated: ${new Date().toISOString()}                          -->
 <!-- ================================================================= -->

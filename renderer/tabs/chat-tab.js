@@ -1,7 +1,7 @@
 /**
- * PromptLock — Interactive Chat & Orchestrator Tab Controller (Step 1.2 & Polish Update)
+ * Xprompt — Interactive Chat & Orchestrator Tab Controller (Step 1.2 & Polish Update)
  *
- * Developer interacts directly with the PromptLock Brain:
+ * Developer interacts directly with the Xprompt Brain:
  *  - Chat feed with User & Assistant message bubbles
  *  - Interactive inline A / B / C architecture option buttons
  *  - Inline Plan review card with Approve / Reject / Modify buttons
@@ -14,7 +14,7 @@
 (() => {
   'use strict';
 
-  const api = window.promptLock || window.api;
+  const api = window.xprompt || window.promptLock || window.api;
 
   // ── DOM Elements ─────────────────────────────────────────────────────────────
   const chatMessages       = document.getElementById('chat-messages');
@@ -121,7 +121,7 @@
     }
   }
 
-  function setTyping(isTyping, customText = 'PromptLock is analyzing AST & intent…') {
+  function setTyping(isTyping, customText = 'Xprompt is analyzing AST & intent…') {
     if (!chatTyping) return;
     if (isTyping) {
       chatTyping.classList.remove('hidden');

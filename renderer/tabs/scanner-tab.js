@@ -1,5 +1,5 @@
 /**
- * PromptLock — Scanner Tab Controller (Step 2 Upgrade Shim)
+ * Xprompt — Scanner Tab Controller (Step 2 Upgrade Shim)
  *
  * Thin module wrapper for the File Tree & Health tab.
  * Core logic lives in app.js (renderSnapshot, renderScanningState, etc.)

@@ -1,5 +1,5 @@
 /**
- * PromptLock — Per-Project Isolated Storage Manager
+ * Xprompt — Per-Project Isolated Storage Manager
  *
  * Implements per-project isolated directory architecture:
  *   userData/
@@ -45,7 +45,9 @@ function getUserDataDir() {
   } catch (_) {}
 
   if (!userData) {
-    userData = path.join(os.homedir(), '.promptlock');
+    const xpromptDir = path.join(os.homedir(), '.xprompt');
+    const legacyDir = path.join(os.homedir(), '.promptlock');
+    userData = fs.existsSync(legacyDir) && !fs.existsSync(xpromptDir) ? legacyDir : xpromptDir;
   }
 
   if (!fs.existsSync(userData)) {

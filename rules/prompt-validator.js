@@ -1,5 +1,5 @@
 /**
- * PromptLock — Prompt Validator (Step 4)
+ * Xprompt — Prompt Validator (Step 4)
  *
  * Verifies that generated AI prompts meet all strict guardrail criteria:
  *  - Zero-secrets enforcement
@@ -12,7 +12,7 @@
 'use strict';
 
 /**
- * Validate a generated prompt string against PromptLock guardrail standards.
+ * Validate a generated prompt string against Xprompt guardrail standards.
  * @param {string} promptText
  * @param {object} [options] - { agent, activeRules, plan }
  * @returns {{ valid: boolean, score: number, checks: object, warnings: string[] }}

@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 /**
- * PromptLock — Electron Main Process (v2.0 Orchestrator Upgrade)
+ * Xprompt — Electron Main Process (v2.0 Orchestrator Upgrade)
  *
  * Implements Step 1 & Step 2 Architecture:
  *  - Floating frameless glassmorphism window
@@ -49,6 +49,7 @@ function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   mainWindow = new BrowserWindow({
+    title:       'Xprompt',
     icon: path.join(__dirname, 'assets/icon.png'),
     width:  ICON_SIZE.width,
     height: ICON_SIZE.height,
@@ -88,7 +89,7 @@ app.whenReady().then(async () => {
     try {
       app.dock.setIcon(path.join(__dirname, 'assets/icon.png'));
     } catch (e) {
-      console.warn('[PromptLock] Failed to set dock icon:', e.message);
+      console.warn('[Xprompt] Failed to set dock icon:', e.message);
     }
   }
 
@@ -98,10 +99,10 @@ app.whenReady().then(async () => {
     if (fs.existsSync(iconPath)) {
       const trayImage = nativeImage.createFromPath(iconPath).resize({ width: 18, height: 18 });
       tray = new Tray(trayImage);
-      tray.setToolTip('PromptLock');
+      tray.setToolTip('Xprompt');
       const trayMenu = Menu.buildFromTemplate([
         {
-          label: 'Show / Hide PromptLock',
+          label: 'Show / Hide Xprompt',
           click: () => {
             if (!mainWindow) return;
             if (mainWindow.isVisible()) {
@@ -127,7 +128,7 @@ app.whenReady().then(async () => {
       });
     }
   } catch (trayErr) {
-    console.warn('[PromptLock] Tray setup warning:', trayErr.message);
+    console.warn('[Xprompt] Tray setup warning:', trayErr.message);
   }
 
   createWindow();
@@ -136,7 +137,7 @@ app.whenReady().then(async () => {
   try {
     await require('./storage/migrate').runMigration();
   } catch (migErr) {
-    console.warn('[PromptLock] Startup migration warning:', migErr.message);
+    console.warn('[Xprompt] Startup migration warning:', migErr.message);
   }
 
   // 2. Register modular IPC modules
@@ -157,7 +158,7 @@ app.whenReady().then(async () => {
   const activeRoot = projectStore.sanitizeProjectPath(rawActiveRoot);
 
   if (activeRoot && fs.existsSync(activeRoot)) {
-    console.log('[PromptLock] Auto-restoring workspace on startup:', activeRoot);
+    console.log('[Xprompt] Auto-restoring workspace on startup:', activeRoot);
     try {
       const activePid = projectIPC.getActiveProjectId();
       if (activePid) {
@@ -173,7 +174,7 @@ app.whenReady().then(async () => {
         }
       });
     } catch (err) {
-      console.warn('[PromptLock] Startup pre-scan error:', err.message);
+      console.warn('[Xprompt] Startup pre-scan error:', err.message);
     }
   }
 
@@ -211,7 +212,7 @@ ipcMain.on('window-expand', () => {
 
   mainWindow.setBounds({ x: Math.round(x), y: Math.round(y), width: EXPAND_SIZE.width, height: EXPAND_SIZE.height });
   mainWindow.focus();
-  console.log('[PromptLock] Expanded panel to', EXPAND_SIZE.width, 'x', EXPAND_SIZE.height, 'at', x, y);
+  console.log('[Xprompt] Expanded panel to', EXPAND_SIZE.width, 'x', EXPAND_SIZE.height, 'at', x, y);
 });
 
 ipcMain.on('window-collapse', () => {
@@ -221,7 +222,7 @@ ipcMain.on('window-collapse', () => {
   let x = Math.max(8, Math.min(bounds.x + bounds.width  - ICON_SIZE.width,  sw - ICON_SIZE.width  - 8));
   let y = Math.max(8, Math.min(bounds.y + bounds.height - ICON_SIZE.height, sh - ICON_SIZE.height - 8));
   mainWindow.setBounds({ x: Math.round(x), y: Math.round(y), width: ICON_SIZE.width, height: ICON_SIZE.height });
-  console.log('[PromptLock] Collapsed to icon at', x, y);
+  console.log('[Xprompt] Collapsed to icon at', x, y);
 });
 
 ipcMain.on('window-minimize', () => mainWindow?.minimize());
@@ -243,7 +244,7 @@ ipcMain.on('window-move', (_e, { dx, dy }) => {
 ipcMain.handle('dialog-open-folder', async (_e, opts = {}) => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory', 'createDirectory'],
-    title: (opts && opts.title) || 'Select or Create Project Root Directory — PromptLock',
+    title: (opts && opts.title) || 'Select or Create Project Root Directory — Xprompt',
     buttonLabel: (opts && opts.buttonLabel) || 'Select Folder',
   });
   if (!result.canceled && result.filePaths.length > 0) {
@@ -285,7 +286,7 @@ ipcMain.on('session:save-sync', (event, updates) => {
 ipcMain.handle('ast:scan', async (_e, rawFolderPath) => {
   const projectStore = require('./storage/project-store');
   const folderPath   = projectStore.sanitizeProjectPath(rawFolderPath);
-  console.log('[PromptLock] Starting AST scan for:', folderPath);
+  console.log('[Xprompt] Starting AST scan for:', folderPath);
 
   try {
     const projectStore = require('./storage/project-store');
@@ -323,14 +324,14 @@ ipcMain.handle('ast:scan', async (_e, rawFolderPath) => {
     sessionStore.saveState({ lastActiveProjectPath: folderPath });
 
     console.log(
-      `[PromptLock] Scan complete: ${snapshot.stats.totalFiles} files, ` +
+      `[Xprompt] Scan complete: ${snapshot.stats.totalFiles} files, ` +
       `${snapshot.stats.astFiles} AST-parsed, ${snapshot.stats.functions} functions`
     );
 
     return { ok: true, snapshot, projectId };
 
   } catch (err) {
-    console.error('[PromptLock] AST scan error:', err);
+    console.error('[Xprompt] AST scan error:', err);
     return { ok: false, error: err.message };
   }
 });

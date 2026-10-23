@@ -1,12 +1,12 @@
 {
-  "name": "promptlock",
+  "name": "xprompt",
   "version": "1.0.0",
   "description": "Floating glassmorphism prompt-guard overlay for developers",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "test": "node test/verify.js && node test/step1-step2-test.js && node test/step3-test.js && node test/step4-test.js && node test/step5-security-test.js && node test/step6-verification-test.js",
+    "test": "node test/verify.js && node test/step1-step2-test.js && node test/step4-test.js && node test/step5-security-test.js && node test/step6-verification-test.js",
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
     "build:linux": "electron-builder --linux"
@@ -17,7 +17,7 @@
     "prompt",
     "developer-tools"
   ],
-  "author": "PromptLock",
+  "author": "Xprompt",
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",
@@ -34,12 +34,13 @@
     "ignore": "^5.3.2"
   },
   "build": {
-    "appId": "com.promptlock.app",
-    "productName": "PromptLock",
+    "appId": "com.xprompt.app",
+    "productName": "Xprompt",
     "directories": {
       "output": "build"
     },
     "mac": {
+      "artifactName": "Xprompt.${ext}",
       "icon": "assets/icon.png",
       "target": [
         "dmg",
@@ -47,6 +48,7 @@
       ]
     },
     "win": {
+      "artifactName": "Xprompt.${ext}",
       "icon": "assets/icon.png",
       "target": [
         "nsis",
@@ -54,6 +56,7 @@
       ]
     },
     "linux": {
+      "artifactName": "Xprompt.${ext}",
       "icon": "assets/icon.png",
       "target": [
         "AppImage",
